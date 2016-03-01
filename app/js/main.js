@@ -130,7 +130,14 @@ function render(){
   context.translate(player.x, player.y);
   context.rotate(player.hand.rotation * Math.PI/180);
   context.fillStyle='red';
+  context.globalAlpha=0.1;
+  context.fillRect(0, -1, 2500, 1);
+  context.fillRect(0, 1, 2500, 1);
+  context.globalAlpha=0.5;
   context.fillRect(0, 0, 2500, 1);
+  context.globalAlpha=1;
+  context.fillStyle='cyan';
+  context.fillRect(0, 0 , 50, 4);
   context.fillStyle='black';
   context.restore();
   context.fillRect(0, 225, width, 50);
