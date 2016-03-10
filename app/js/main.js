@@ -45,8 +45,8 @@ var loop,
     gameSpeed = 1,
     keys = [],
     bgpos = 0,
-    deltaX,
-    deltaY,
+    deltaX = 1,
+    deltaY = 1,
     speed = 5,
     // Init images
   	images = [],
@@ -71,7 +71,9 @@ var enemy = function(){
 	this.x = width  + Math.random()*100;
 	this.y= 25 + Math.floor(Math.random()*12)*50;
 	this.width= 24;
-	this.height= 50;
+	this.height= 24;
+	this.color='#FF9800';
+	this.speed = 3;
 }
 var bullet = function(x,y){
 	this.x = x;
@@ -80,6 +82,11 @@ var bullet = function(x,y){
 	this.height= 3;
 	this.angle = player.hand.rotation * Math.PI / 180;
 	this.deltaX = deltaX;
+	this.rikoshet = 0;
+	this.directionX = 1;
+	this.directionY = 1;
+	this.vBx = 1;
+	this.vby = 1;
 
 }
 var start1;
@@ -104,7 +111,25 @@ if (bgpos <= - width ){
   bgpos= 0;
 }
 for (i in enemies){
-  enemies[i].x-=speed;
+	for (j in bullets){
+		if (collision(enemies[i],bullets[j])){
+			enemies.splice(i,1);
+		}
+	}
+}
+for (i in enemies){
+		if (enemies[i].x < player.x){
+			enemies[i].x+= enemies[i].speed*Math.abs(Math.cos(findEnemyMovingAngle(enemies[i],player)));
+		} else if (enemies[i].x > player.x+player.width){
+			enemies[i].x-= enemies[i].speed*Math.abs(Math.cos(findEnemyMovingAngle(enemies[i],player)));
+		}
+		if (enemies[i].y < player.y){
+			enemies[i].y+=enemies[i].speed*Math.abs(Math.sin(findEnemyMovingAngle(enemies[i],player)));
+		} else if (enemies[i].y > player.y+player.height){
+			enemies[i].y-=enemies[i].speed*Math.abs(Math.sin(findEnemyMovingAngle(enemies[i],player)));
+		}
+
+
   if (enemies[i].x < -510){
     enemies.splice(i,1);
   }
@@ -117,14 +142,22 @@ for (i in bullets){
 	vB = 22 //Speed of bullet
 	vBx = vB*Math.cos(bullets[i].angle); //Speed of bullet on x-axis
 	vBy = vB*Math.sin(bullets[i].angle); //Speed of bullet on y-axis
-	bullets[i].x+=vBx;
-	bullets[i].y+=vBy;
+
+	bullets[i].x+=vBx*bullets[i].directionX;
+	bullets[i].y+=vBy*bullets[i].directionY;
+	if (bullets[i].x >= width || bullets[i].x <= 0){
+		bullets[i].directionX *= -1;
+	}
+	if (bullets[i].y <= 25 || bullets[i].y>=height-53){
+		bullets[i].directionY *= -1;
+	}
 }
 
-if(keys[37] && !gameIsOver){player.x-=5;findMouseAngle();} // Left
-if(keys[39] && !gameIsOver){player.x+=5;findMouseAngle();} // Right
-if(keys[38] && !gameIsOver ){player.y-=5;findMouseAngle(); } // Up
-if(keys[40] && !gameIsOver ){player.y+=5;findMouseAngle(); } // Down
+
+if(keys[37] || keys[65] && !gameIsOver){player.x-=5;findMouseAngle();} // Left
+if(keys[39] || keys[68] && !gameIsOver){player.x+=5;findMouseAngle();} // Right
+if(keys[38] || keys[87] && !gameIsOver ){player.y-=5;findMouseAngle(); } // Up
+if(keys[40] || keys[83] && !gameIsOver ){player.y+=5;findMouseAngle(); } // Down
 // if(keys[13] && gameIsOver){ chooseLevel(); } // Start new game
 
 /* ---------------*\
@@ -158,8 +191,10 @@ function render(){
   context.fillRect(0, height - 50, width, 50);
   for (i in enemies){
     var enemy = enemies[i];
+		context.fillStyle=enemy.color;
     context.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
   }
+	context.fillStyle='black';
 	for (i in bullets){
 		var bullet = bullets[i];
 		context.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
@@ -184,6 +219,12 @@ function findMouseAngle(){
 	player.hand.rotation =   180/Math.PI * Math.atan2(deltaY, deltaX);
 	console.log("searching");
 }
+function findEnemyMovingAngle(enemy,player){
+	var deltaX = enemy.x - player.x;
+	var deltaY = enemy.y - player.y;
+	var moving_angle = 180/Math.PI * Math.atan2(deltaY, deltaX);
+	return moving_angle;
+}
 function shoot(){
 	bullets.push(new bullet(player.x,player.y));
 }
@@ -192,6 +233,14 @@ function collision(first, second){
 		first.x+first.width<second.x ||
 		first.y > second.y + second.height ||
 		first.y+first.height<second.y);
+}
+function hCollision(first, second){
+	return !(first.x > second.x + second.width ||
+		first.x+first.width<second.x);
+}
+function vCollision(first, second){
+	return !(first.y > second.y + second.height ||
+	first.y+first.height<second.y);
 }
 findMouseAngle();
 start();
