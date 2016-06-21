@@ -4,8 +4,8 @@
 
 var canvas = document.getElementById("context");
 var context = canvas.getContext("2d"),
-	width = 1000,
-	height = 700;
+	width = window.innerWidth - 200,
+	height = window.innerHeight - 300;
 canvas.width = width;
 canvas.height = height;
 canvas.style.width = canvas.width + "px";
@@ -25,8 +25,8 @@ canvas.style.height = canvas.height + "px";
   }, false);
 
   window.addEventListener("mousemove", function(e){
-		mouseX = event.clientX;
-		mouseY = event.clientY;
+		mouseX = event.clientX-document.getElementById("context").offsetLeft;
+		mouseY = event.clientY-document.getElementById("context").offsetTop;
 		findMouseAngle();
   }, false);
 	window.addEventListener("click", function(e){
@@ -172,7 +172,9 @@ if(player.y >= height - player.height - 50){player.y=height-player.height -50; }
 }
 function render(){
   context.clearRect(0, 0, width, height);
+	context.fillStyle='black';
   context.fillRect(0, 0, width, 25);
+	context.fillStyle='purple';
   context.fillRect(player.x, player.y, player.width, player.height);
   context.save();
   context.translate(player.x, player.y);
@@ -188,17 +190,19 @@ function render(){
   context.fillRect(0, 0 , 50, 4);
   context.fillStyle='black';
   context.restore();
+  context.fillStyle='black';
   context.fillRect(0, height - 50, width, 50);
   for (i in enemies){
     var enemy = enemies[i];
 		context.fillStyle=enemy.color;
     context.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
   }
-	context.fillStyle='black';
+	context.fillStyle='white';
 	for (i in bullets){
 		var bullet = bullets[i];
 		context.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
 	}
+	context.fillStyle='purple';
 }
 function initImages(paths){
 	requiredImages = paths.length;
@@ -214,8 +218,8 @@ function initImages(paths){
 	}
 }
 function findMouseAngle(){
-	deltaX = mouseX -10 - player.x;
-	deltaY = mouseY -10- player.y;
+	deltaX = mouseX - player.x;
+	deltaY = mouseY- player.y;
 	player.hand.rotation =   180/Math.PI * Math.atan2(deltaY, deltaX);
 	console.log("searching");
 }
