@@ -3,10 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="css/style.css">
-<link href='https://fonts.googleapis.com/css?family=Press+Start+2P' rel='stylesheet' type='text/css'>
+<!-- <link href='https://fonts.googleapis.com/css?family=Press+Start+2P' rel='stylesheet' type='text/css'> -->
   <style>
+    @font-face {
+      font-family: 'Press';
+      font-style: normal;
+      font-weight: 400;
+      src: local('Press Start 2P'), local('PressStart2P-Regular'), url(https://fonts.gstatic.com/s/pressstart2p/v4/8Lg6LX8-ntOHUQnvQ0E7ozT1DHLc-lgcGofyQSe5eyY.woff2) format('woff2');
+      unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+    }
+    @font-face {
+      font-family: 'Press';
+      font-style: normal;
+      font-weight: 400;
+      src: local('Press Start 2P'), local('PressStart2P-Regular'), url(https://fonts.gstatic.com/s/pressstart2p/v4/8Lg6LX8-ntOHUQnvQ0E7o69WAFmVxfVhVkWhl-QDeAk.woff2) format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+    }
     * {
       box-sizing: border-box;
+    }
+    #context {
+      cursor: none;
     }
     body {
       background: black;
@@ -16,19 +33,28 @@
       /*margin:0 auto;*/
       padding:100px;
     }
-    h3 {
+    h3, h4 {
       text-align: left;
       margin-top:0px;
+      margin-bottom: 10px;
       font-size: 24px;
       color: white;
       text-transform: uppercase;
-      font-family: 'Press Start 2P', cursive;
+      font-family: 'Press', cursive;
+    }
+    h4 {
+      font-size: 14px;
+      padding: 10px 0px;
+    }
+    .score {
+      margin-top:10px;
     }
   </style>
   <title>Game title man</title>
 </head>
 <body>
-  <h3>Небојша </h3>sd
+  <h3>Небојша </h3>
+  <h4>Score <div class="score">0</div></h4>
   <div class="container">
     <canvas id='context' width='1000' height="700">
     </canvas>
